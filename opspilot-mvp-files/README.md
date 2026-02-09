@@ -348,3 +348,4 @@ This MVP uses **simulated adapters** and is safe-by-default. To connect real env
 - Allow-listed tool actions and command safety
 
 ---
+
