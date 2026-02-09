@@ -1,0 +1,76 @@
+############################################
+# Secrets / Environment
+############################################
+.env
+.env.*
+!.env.example
+
+############################################
+# Python / Virtualenv
+############################################
+.venv/
+venv/
+ENV/
+env/
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+*.log
+
+############################################
+# OS / Editor / IDE
+############################################
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+.vscode/
+.idea/
+*.iml
+
+############################################
+# Build / Distribution
+############################################
+build/
+dist/
+*.egg-info/
+.eggs/
+
+############################################
+# Frontend (if you ever add node tooling)
+############################################
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+############################################
+# Local runtime artifacts (optional)
+# Add here anything your app generates at runtime
+############################################
+# If you later write evidence files, traces, exports etc.
+evidence/
+artifacts/
+reports/
+tmp/
+temp/
+
+############################################
+# Docker
+############################################
+# Optional: ignore local override files
+docker-compose.override.yml
+
+############################################
+# Misc
+############################################
+*.bak
+*.swp
+*.swo

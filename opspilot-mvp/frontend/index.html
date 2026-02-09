@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>OpsPilot • Single Agentic Automation MVP</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/styles.css" />
+</head>
+<body>
+  <div class="app" id="app">
+    <aside class="sidebar" aria-label="Primary">
+      <div class="brand">
+        <div class="logo" aria-hidden="true">⚡</div>
+        <div>
+          <div class="brand-title">OpsPilot</div>
+          <div class="brand-sub">Agentic Automation • MVP</div>
+        </div>
+      </div>
+
+      <nav class="nav">
+        <button class="nav-item active" data-route="dashboard">
+          <span class="nav-dot"></span>
+          <span>Dashboard</span>
+        </button>
+        <button class="nav-item" data-route="run">
+          <span class="nav-dot"></span>
+          <span>Runbook Launcher</span>
+        </button>
+        <button class="nav-item" data-route="approvals">
+          <span class="nav-dot"></span>
+          <span>Approval Inbox</span>
+        </button>
+        <button class="nav-item" data-route="artifacts">
+          <span class="nav-dot"></span>
+          <span>Artifacts</span>
+        </button>
+        <div class="nav-sep"></div>
+        <button class="nav-item" data-route="settings">
+          <span class="nav-dot"></span>
+          <span>Settings</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="usercard">
+          <div class="avatar" id="avatar">R</div>
+          <div class="user-meta">
+            <div class="user-name" id="userName">operator</div>
+            <div class="user-role" id="userRole">operator</div>
+          </div>
+          <button class="ghost" id="switchUserBtn" title="Switch user">⇄</button>
+        </div>
+        <div class="toggle-row">
+          <span class="muted">Theme</span>
+          <button class="toggle" id="themeToggle" aria-label="Toggle theme">
+            <span class="toggle-pill"></span>
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div class="search">
+          <input id="quickSearch" type="search" placeholder="Search runs, servers, change IDs…" aria-label="Search" />
+          <span class="kbd">Ctrl K</span>
+        </div>
+        <div class="topbar-actions">
+          <button class="chip" id="healthChip" title="Backend health">Checking…</button>
+          <button class="primary" id="newRunBtn">New Run</button>
+        </div>
+      </header>
+
+      <section class="content">
+        <!-- DASHBOARD -->
+        <div class="view" id="view-dashboard">
+          <div class="grid-2">
+            <div class="card hero">
+              <div class="hero-text">
+                <h1>Single tool. Multiple skills.</h1>
+                <p class="muted">
+                  Plan → validate → (approve) → execute → evidence. Powered by Gemini (optional) with safe dry-run execution.
+                </p>
+                <div class="hero-actions">
+                  <button class="primary" id="ctaRun">Launch a run</button>
+                  <button class="secondary" id="ctaDemoEvent">Simulate SolarWinds event</button>
+                </div>
+              </div>
+              <div class="hero-art" aria-hidden="true">
+                <div class="orb"></div>
+                <div class="orb orb2"></div>
+                <div class="orb orb3"></div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-head">
+                <h2>Live metrics</h2>
+                <span class="pill" id="modelPill">Model: —</span>
+              </div>
+              <div class="metrics">
+                <div class="metric">
+                  <div class="metric-label">Total Runs</div>
+                  <div class="metric-value" id="mTotal">0</div>
+                </div>
+                <div class="metric">
+                  <div class="metric-label">Pending Approvals</div>
+                  <div class="metric-value" id="mPending">0</div>
+                </div>
+                <div class="metric">
+                  <div class="metric-label">Last Run Status</div>
+                  <div class="metric-value" id="mLast">—</div>
+                </div>
+              </div>
+              <div class="note">
+                <div class="note-icon">ℹ️</div>
+                <div>
+                  <strong>MVP mode:</strong> All executions are dry-run by default. Swap adapters with real integrations later.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid-2">
+            <div class="card">
+              <div class="card-head">
+                <h2>Recent Runs</h2>
+                <button class="ghost" id="refreshRuns">Refresh</button>
+              </div>
+              <div class="table" id="runsTable"></div>
+            </div>
+
+            <div class="card">
+              <div class="card-head">
+                <h2>Quick actions</h2>
+              </div>
+              <div class="quick">
+                <button class="quick-btn" data-skill="patching_exclusion">
+                  <span class="qicon">🛡️</span>
+                  <span>
+                    <span class="qtitle">Patching Exclusions</span>
+                    <span class="qsub">Bulk CSV, cutoff policy</span>
+                  </span>
+                </button>
+                <button class="quick-btn" data-skill="storage_ops">
+                  <span class="qicon">💾</span>
+                  <span>
+                    <span class="qtitle">Storage Ops</span>
+                    <span class="qsub">Mount/unmount + permissions</span>
+                  </span>
+                </button>
+                <button class="quick-btn" data-skill="manageengine_downtime">
+                  <span class="qicon">⏱️</span>
+                  <span>
+                    <span class="qtitle">ManageEngine Downtime</span>
+                    <span class="qsub">Idempotent schedules</span>
+                  </span>
+                </button>
+                <button class="quick-btn" data-skill="vuln_triage">
+                  <span class="qicon">🧪</span>
+                  <span>
+                    <span class="qtitle">Vuln Triage</span>
+                    <span class="qsub">Segment + prioritize</span>
+                  </span>
+                </button>
+                <button class="quick-btn" data-skill="solarwinds_event">
+                  <span class="qicon">📡</span>
+                  <span>
+                    <span class="qtitle">SolarWinds Event</span>
+                    <span class="qsub">Webhook → run</span>
+                  </span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RUNBOOK LAUNCHER -->
+        <div class="view hidden" id="view-run">
+          <div class="grid-2">
+            <div class="card">
+              <div class="card-head">
+                <h2>Runbook Launcher</h2>
+                <span class="pill">Safe Dry-run</span>
+              </div>
+
+              <div class="form">
+                <label class="label">Skill</label>
+                <div class="segmented" role="tablist" aria-label="Skill">
+                  <button class="seg active" data-skill="patching_exclusion">Patching</button>
+                  <button class="seg" data-skill="storage_ops">Storage</button>
+                  <button class="seg" data-skill="manageengine_downtime">Downtime</button>
+                  <button class="seg" data-skill="vuln_triage">Vuln</button>
+                  <button class="seg" data-skill="solarwinds_event">IP SLA</button>
+                </div>
+
+                <div class="row">
+                  <div>
+                    <label class="label">Environment</label>
+                    <select id="envSelect" class="input">
+                      <option value="dev">dev</option>
+                      <option value="test">test</option>
+                      <option value="prod">prod</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="label">Change ID (optional)</label>
+                    <input id="changeId" class="input" placeholder="e.g., CHG123456" />
+                  </div>
+                </div>
+
+                <label class="label">Request</label>
+                <textarea id="message" class="input" rows="7" placeholder="Describe what you want OpsPilot to do…"></textarea>
+
+                <div class="row">
+                  <button class="secondary" id="fillExample">Use example</button>
+                  <button class="primary" id="runNow">Generate plan</button>
+                </div>
+
+                <div class="upload" id="uploadBox">
+                  <div class="upload-head">
+                    <div>
+                      <strong>Vuln CSV upload</strong>
+                      <div class="muted">Only needed for Vuln Triage skill (optional).</div>
+                    </div>
+                    <button class="ghost" id="uploadBtn">Upload</button>
+                  </div>
+                  <input id="fileInput" type="file" accept=".csv" hidden />
+                  <div class="upload-meta" id="uploadMeta">No file selected</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card" id="planCard">
+              <div class="card-head">
+                <h2>Plan Preview</h2>
+                <span class="pill" id="riskPill">Risk: —</span>
+              </div>
+              <div class="plan" id="planPreview">
+                <div class="empty">Generate a plan to see steps, approvals, and evidence.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- APPROVALS -->
+        <div class="view hidden" id="view-approvals">
+          <div class="card">
+            <div class="card-head">
+              <h2>Approval Inbox</h2>
+              <button class="ghost" id="refreshApprovals">Refresh</button>
+            </div>
+            <div id="approvalList" class="list"></div>
+          </div>
+        </div>
+
+        <!-- ARTIFACTS -->
+        <div class="view hidden" id="view-artifacts">
+          <div class="grid-2">
+            <div class="card">
+              <div class="card-head">
+                <h2>Run Details</h2>
+                <span class="pill" id="detailStatus">—</span>
+              </div>
+              <div id="runDetails" class="details empty">Select a run from Dashboard → Recent Runs.</div>
+            </div>
+            <div class="card">
+              <div class="card-head">
+                <h2>Evidence</h2>
+                <span class="pill">Immutable (MVP)</span>
+              </div>
+              <pre class="code" id="evidenceBox">{ }</pre>
+            </div>
+          </div>
+        </div>
+
+        <!-- SETTINGS -->
+        <div class="view hidden" id="view-settings">
+          <div class="grid-2">
+            <div class="card">
+              <div class="card-head">
+                <h2>Settings</h2>
+              </div>
+              <div class="form">
+                <label class="label">API Base URL</label>
+                <input class="input" id="apiBase" placeholder="Leave empty for same host" />
+
+                <label class="label">User</label>
+                <div class="row">
+                  <input class="input" id="setUser" placeholder="operator" />
+                  <select class="input" id="setRole">
+                    <option value="viewer">viewer</option>
+                    <option value="operator">operator</option>
+                    <option value="admin">admin</option>
+                  </select>
+                </div>
+
+                <div class="row">
+                  <button class="secondary" id="saveSettings">Save</button>
+                  <button class="ghost" id="resetSettings">Reset</button>
+                </div>
+
+                <div class="note">
+                  <div class="note-icon">🔐</div>
+                  <div>
+                    Auth in this MVP is header-based (<code>X-User</code>, <code>X-Role</code>) for demo.
+                    Replace with SSO/RBAC later.
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-head">
+                <h2>Tips</h2>
+              </div>
+              <ul class="tips">
+                <li><strong>Gemini optional:</strong> If <code>GEMINI_API_KEY</code> isn’t set, OpsPilot uses a deterministic stub plan.</li>
+                <li><strong>Approvals:</strong> High-risk approvals require admin role.</li>
+                <li><strong>Dry-run:</strong> Adapters return evidence without making real changes.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+      </section>
+    </main>
+  </div>
+
+  <div class="modal hidden" id="modal">
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="modal-head">
+        <h3 id="modalTitle">Switch user</h3>
+        <button class="ghost" id="modalClose">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <input class="input" id="modalUser" placeholder="operator" />
+          <select class="input" id="modalRole">
+            <option value="viewer">viewer</option>
+            <option value="operator">operator</option>
+            <option value="admin">admin</option>
+          </select>
+        </div>
+        <div class="row">
+          <button class="secondary" id="modalCancel">Cancel</button>
+          <button class="primary" id="modalSave">Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/assets/app.js"></script>
+</body>
+</html>
